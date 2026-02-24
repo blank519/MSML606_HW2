@@ -24,8 +24,16 @@ class HomeWork2:
     #     3   4
 
     def constructBinaryTree(self, input) -> TreeNode:
-        pass
+        print(input)
+        root = self.recurseBinaryTree(input, -1)
+        return root
 
+    def recurseBinaryTree(self, input, i) -> TreeNode:
+        if -i > len(input):
+            print(f"Leaf node: {i}")
+            return None
+        node = TreeNode(input[i], self.recurseBinaryTree(input, i*2), self.recurseBinaryTree(input, i*2-1))
+        return node
 
 
     # Problem 2.1: Use pre-order traversal (root, left, right) to generate prefix notation
@@ -103,10 +111,10 @@ if __name__ == "__main__":
 
     for i, (postfix_input,) in enumerate(testcases, 1):
         postfix = postfix_input.split(",")
-
+        print(f"Postfix: {postfix}")
         root = homework2.constructBinaryTree(postfix)
         output = homework2.postfixNotationPrint(root)
-
+        print(f"Output: {output}")
         assert output == postfix, f"P1 Test {i} failed: tree structure incorrect"
         print(f"P1 Test {i} passed")
 
@@ -118,7 +126,6 @@ if __name__ == "__main__":
     for i, row in enumerate(testcases, 1):
         postfix_input, exp_pre, exp_in, exp_post = row
         postfix = postfix_input.split(",")
-
         root = homework2.constructBinaryTree(postfix)
 
         assert homework2.prefixNotationPrint(root) == exp_pre.split(","), f"P2-{i} prefix failed"
