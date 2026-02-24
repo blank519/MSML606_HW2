@@ -24,15 +24,19 @@ class HomeWork2:
     #     3   4
 
     def constructBinaryTree(self, input) -> TreeNode:
-        print(input)
-        root = self.recurseBinaryTree(input, -1)
+        #print(input)
+        rearranged_arr = [input[-1]]
+        for i in range(-3, -len(input)-1, -2):
+            rearranged_arr.append(input[i])
+            rearranged_arr.append(input[i+1])
+        #print(rearranged_arr)
+        root = self.recurseBinaryTree(rearranged_arr, 0)
         return root
 
     def recurseBinaryTree(self, input, i) -> TreeNode:
-        if -i > len(input):
-            print(f"Leaf node: {i}")
+        if i >= len(input):
             return None
-        node = TreeNode(input[i], self.recurseBinaryTree(input, i*2), self.recurseBinaryTree(input, i*2-1))
+        node = TreeNode(input[i], self.recurseBinaryTree(input, i*2+1), self.recurseBinaryTree(input, i*2+2))
         return node
 
 
@@ -63,8 +67,16 @@ class HomeWork2:
     # you can see the examples in p2_traversals.csv
 
     def postfixNotationPrint(self, head: TreeNode) -> list:
-        pass
-
+        if head == None:
+            return None
+        left_array = self.postfixNotationPrint(head.left)
+        right_array = self.postfixNotationPrint(head.right)
+        if left_array == None:
+            return [head.val]
+        elif right_array == None:
+            return left_array + [head.val]
+        else:
+            return left_array + right_array + [head.val]
 
 class Stack:
     # Implement your stack using either an array or a list
@@ -111,10 +123,8 @@ if __name__ == "__main__":
 
     for i, (postfix_input,) in enumerate(testcases, 1):
         postfix = postfix_input.split(",")
-        print(f"Postfix: {postfix}")
         root = homework2.constructBinaryTree(postfix)
         output = homework2.postfixNotationPrint(root)
-        print(f"Output: {output}")
         assert output == postfix, f"P1 Test {i} failed: tree structure incorrect"
         print(f"P1 Test {i} passed")
 
