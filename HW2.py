@@ -46,7 +46,16 @@ class HomeWork2:
     # you can see the examples in p2_traversals.csv
 
     def prefixNotationPrint(self, head: TreeNode) -> list:
-        pass
+        if head == None:
+            return None
+        left_array = self.prefixNotationPrint(head.left)
+        right_array = self.prefixNotationPrint(head.right)
+        if left_array == None:
+            return [head.val]
+        elif right_array == None:
+            return [head.val] + left_array
+        else:
+            return [head.val] + left_array + right_array
 
     # Problem 2.2: Use in-order traversal (left, root, right) for infix notation with appropriate parentheses.
     # return an array of elements of an infix expression
@@ -58,7 +67,18 @@ class HomeWork2:
     # treat parentheses as individual elements in the returned list (see output)
 
     def infixNotationPrint(self, head: TreeNode) -> list:
-        pass
+        if head == None:
+            return None
+        left_array = self.infixNotationPrint(head.left)
+        right_array = self.infixNotationPrint(head.right)
+        
+        # Should I just assume left and right array will either both have an element or both be None?
+        if left_array == None:
+            return [head.val]
+        elif right_array == None:
+            return left_array + [head.val]
+        else:
+            return ['('] + left_array + [head.val] + right_array + [')']
 
 
     # Problem 2.3: Use post-order traversal (left, right, root) to generate postfix notation.
@@ -137,7 +157,9 @@ if __name__ == "__main__":
         postfix_input, exp_pre, exp_in, exp_post = row
         postfix = postfix_input.split(",")
         root = homework2.constructBinaryTree(postfix)
-
+        print(root.left.val, root.right.val)
+        print(exp_pre.split(","))
+        print(homework2.prefixNotationPrint(root))
         assert homework2.prefixNotationPrint(root) == exp_pre.split(","), f"P2-{i} prefix failed"
         assert homework2.infixNotationPrint(root) == exp_in.split(","), f"P2-{i} infix failed"
         assert homework2.postfixNotationPrint(root) == exp_post.split(","), f"P2-{i} postfix failed"
