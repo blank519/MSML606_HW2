@@ -24,13 +24,11 @@ class HomeWork2:
     #     3   4
 
     def constructBinaryTree(self, input) -> TreeNode:
-        #print(input)
         root, _ = self.recurseBinaryTree(input, -1)
-
         return root
 
     def recurseBinaryTree(self, input, i):
-        if -i >= len(input):
+        if -i > len(input):
             # Edge case: occurs if an operator is only given 1 child node or if tree is empty 
             return None
         elif input[i].isnumeric():
@@ -122,9 +120,9 @@ class Stack:
         self.top = value
     
     def pop(self):
-        # Is this what you meant??
         if self.size == 0:
-            return None
+            # Handles "too many operands" edge case: if there are no more values in the stack, throw an error
+            raise IndexError("No values left. The expression contained too many operands with not enough numbers.")
         
         val = self.top
         del self.stack[-1]
@@ -155,6 +153,8 @@ class Stack:
     # DO NOT USE EVAL function for evaluating the expression
 
     def evaluatePostfix(self, exp: str) -> int:
+        if exp == None: 
+            return ValueError("The inserted expression cannot be empty.")
         value_list = exp.split()
         for value in value_list:
             self.push(value)
@@ -164,7 +164,13 @@ class Stack:
     def recurse_evaluation(self):
         current_val = self.stack.pop()
         if current_val.isnumeric():
-            return float(current_val)
+            # Kind of handles "insufficient operands" edge case: excess numbers are basically just ignored
+            # Handles negative and decimal numbers, since they can still be converted to float
+            # Also, I don't see why very large numbers require special handling
+            try:
+                return float(current_val)
+            except ValueError:
+                pass
         else:
             right = self.recurse_evaluation()
             left = self.recurse_evaluation()
@@ -176,8 +182,12 @@ class Stack:
                 return left * right
             elif current_val == '/':
                 if right == 0:
+                    # Handles divide by zero edge case
                     raise ZeroDivisionError(f"Dividing by zero: {left}/{right}")
                 return left / right
+            else:
+                # Handles invalid token edge case
+                raise ValueError(f"The following value is not a number or supported operator: {current_val}")
 
 # Main Function. Do not edit the code below
 if __name__ == "__main__":
