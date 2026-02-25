@@ -30,7 +30,7 @@ class HomeWork2:
         return root
 
     def recurseBinaryTree(self, input, i):
-        if i >= len(input):
+        if -i >= len(input):
             # Edge case: occurs if an operator is only given 1 child node or if tree is empty 
             return None
         elif input[i].isnumeric():
@@ -113,13 +113,34 @@ class Stack:
 
     def __init__(self):
         self.stack = []
+        self.size = 0
+        self.top = None
 
     def push(self, value):
         self.stack.append(value)
+        self.size += 1
+        self.top = value
     
     def pop(self):
-        return self.stack.pop(-1)
+        # Is this what you meant??
+        if self.size == 0:
+            return None
+        
+        val = self.top
+        del self.stack[-1]
+        self.size -= 1
+
+        if self.size == 0:
+            self.top = None
+        else:
+            self.top = self.stack[-1]
+        return val
     
+    def top(self):
+        return self.top
+    
+    def size(self):
+        return self.size
     # Problem 3: Write code to evaluate a postfix expression using stack and return the integer value
     # Use stack which you implemented above for this problem
 
@@ -133,10 +154,30 @@ class Stack:
 
     # DO NOT USE EVAL function for evaluating the expression
 
-    def evaluatePostfix(exp: str) -> int:
-        # TODO: implement this using your Stack class
-        pass
+    def evaluatePostfix(self, exp: str) -> int:
+        value_list = exp.split()
+        for value in value_list:
+            self.push(value)
+        
+        return self.recurse_evaluation()
 
+    def recurse_evaluation(self):
+        current_val = self.stack.pop()
+        if current_val.isnumeric():
+            return float(current_val)
+        else:
+            right = self.recurse_evaluation()
+            left = self.recurse_evaluation()
+            if current_val == '+':
+                return left + right
+            elif current_val == '-':
+                return left - right
+            elif current_val == '*':
+                return left * right
+            elif current_val == '/':
+                if right == 0:
+                    raise ZeroDivisionError(f"Dividing by zero: {left}/{right}")
+                return left / right
 
 # Main Function. Do not edit the code below
 if __name__ == "__main__":
