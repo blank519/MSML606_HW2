@@ -112,9 +112,14 @@ class Stack:
     # Use your own stack implementation to solve problem 3
 
     def __init__(self):
-        # TODO: initialize the stack
-        pass
+        self.stack = []
 
+    def push(self, value):
+        self.stack.append(value)
+    
+    def pop(self):
+        return self.stack.pop(-1)
+    
     # Problem 3: Write code to evaluate a postfix expression using stack and return the integer value
     # Use stack which you implemented above for this problem
 
@@ -149,8 +154,6 @@ if __name__ == "__main__":
         postfix = postfix_input.split(",")
         root = homework2.constructBinaryTree(postfix)
         output = homework2.postfixNotationPrint(root)
-        print(postfix)
-        print(output)
         assert output == postfix, f"P1 Test {i} failed: tree structure incorrect"
         print(f"P1 Test {i} passed")
 
@@ -163,9 +166,6 @@ if __name__ == "__main__":
         postfix_input, exp_pre, exp_in, exp_post = row
         postfix = postfix_input.split(",")
         root = homework2.constructBinaryTree(postfix)
-        print(root.left.val, root.right.val)
-        print(exp_pre.split(","))
-        print(homework2.prefixNotationPrint(root))
         assert homework2.prefixNotationPrint(root) == exp_pre.split(","), f"P2-{i} prefix failed"
         assert homework2.infixNotationPrint(root) == exp_in.split(","), f"P2-{i} infix failed"
         assert homework2.postfixNotationPrint(root) == exp_post.split(","), f"P2-{i} postfix failed"
