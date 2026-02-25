@@ -29,17 +29,22 @@ class HomeWork2:
 
     def recurseBinaryTree(self, input, i):
         if -i > len(input):
-            # Edge case: occurs if an operator is only given 1 child node or if tree is empty 
+            # Edge case: occurs if an operator is only given 1 child node or if tree is empty. Returns None.
             return None
-        elif input[i].isnumeric():
-            # Numbers are leaf nodes
-            return (TreeNode(val=input[i]), i)
-        else:
+        elif input[i] in ['+', '-', '*', '/']:
             # Non-numbers (operators) have 2 children
             right_tree, new_i = self.recurseBinaryTree(input, i-1)
             left_tree, final_i = self.recurseBinaryTree(input, new_i-1)
             # Return both the tree node and the current index for the parent to use
             return(TreeNode(val=input[i], left=left_tree, right=right_tree), final_i)
+        else:
+            try:
+                if float(input[i]):
+                    # Handles negative and decimal edge cases
+                    return (TreeNode(val=input[i]), i)
+            except ValueError:
+                # Handles invalid token error
+                ValueError(f"The following value is not a number or supported operator: {input[i]}")
 
 
     # Problem 2.1: Use pre-order traversal (root, left, right) to generate prefix notation
@@ -154,12 +159,20 @@ class Stack:
 
     def evaluatePostfix(self, exp: str) -> int:
         if exp == None: 
+            # Handles empty expression edge case
             return ValueError("The inserted expression cannot be empty.")
+        
         value_list = exp.split()
+        if len(value_list) == 0:
+            # Handles empty expression edge case
+            return ValueError("The inserted expression cannot be empty.")
         for value in value_list:
             self.push(value)
         
-        return self.recurse_evaluation()
+        answer = self.recurse_evaluation()
+        # Clear stack in the edge case of too many numbers
+        self.stack = []
+        return answer
 
     def recurse_evaluation(self):
         current_val = self.stack.pop()
